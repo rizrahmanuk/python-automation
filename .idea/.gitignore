@@ -1,0 +1,4 @@
+# Default ignored files
+/workspace.xml
+pytest.ini.swp
+gekodriver.log
