@@ -18,3 +18,4 @@ Feature: Home Office Web Browsing
     Given the "http://homeoffice.gov.uk" page is displayed
     When the user searches for "tax"
     Then results are shown for "Income Tax rates and Personal Allowances"
+    Then results are shown for "Estimate your Income Tax for the current year"
