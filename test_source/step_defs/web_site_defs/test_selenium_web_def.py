@@ -8,6 +8,8 @@ from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from parse_type import TypeBuilder
+import re
 
 # Constants
 
@@ -19,13 +21,14 @@ scenarios('../../features/web-driven.feature')
 
 # Fixtures
 
+
 @pytest.fixture
 def browser():
     firefox_bin = FirefoxBinary('/usr/bin')
-    b: webdriver = webdriver.Firefox(executable_path='/usr/local/bin/geckodriver')
-    b.implicitly_wait(20)
-    yield b
-    b.quit()
+    fox_webdriver = webdriver.Firefox(executable_path='/usr/local/bin/geckodriver')
+    fox_webdriver.implicitly_wait(20)
+    yield fox_webdriver
+    fox_webdriver.quit()
 
 
 @pytest.fixture
@@ -37,7 +40,7 @@ def wait(browser):
 # Given Steps
 
 
-@given(parsers.parse('the "{web_site}" page is displayed'))
+@given(parsers.parse('the {web_site} page is displayed'))
 def go_to_site(browser, web_site):
     browser.get(web_site)
 
@@ -49,10 +52,15 @@ def search_phrase(browser, wait, phrase):
     search_input.send_keys(phrase + Keys.RETURN)
     # search.submit()
 
+
+@given(parsers.re(r'expected url list:(?P<textual>.*)', flags=re.DOTALL))
+def expected_results(textual):
+    return textual
+
 # Then Steps
-@then(parsers.parse('results are shown for "{phrase}"'))
-def search_results(browser, wait, phrase):
-    # div =browser.find_element_by_id('js-results')
+@then(parsers.cfparse('results are shown for listed results'))
+def search_results(expected_results, browser, wait):
+    # div =browser.find_element_by_id('js-results')x
     # paragraph_p=div.find_element_by_xpath('div/ol/li/p')
     # print('\nparagraph_li='+str(paragraph_p.text))
 
@@ -62,20 +70,18 @@ def search_results(browser, wait, phrase):
     # browser.find_element(by, hook)
     # original XPath=/html/body/div[6]/main/div/form/div[2]/div/div[2]/div[4]/div/ol/li[1]
     tag_a_list_of = wait.until(EC.presence_of_all_elements_located((By.XPATH,
-                                            '//*[@id="js-results"]/div/ol/li/a')))
+                                                                    '//*[@id="js-results"]/div/ol/li/a')))
 
     for web_element in tag_a_list_of:
-        desc = web_element.text
-        print('\nDescription=' + str(desc))
-        if desc.__eq__(phrase):
-            return True
-    print('could not find expected result text=' + phrase)
+        print('expected result text=' + expected_results)
+        return True
+    print('could not find expected result text=' + expected_results)
     assert False
 
     # reference samples
-    # assert str(paragraph_p.text) == phrase
+    # assert str(paragraph_p.text) == result
     # link_tag=item.find_element(By.TAG_NAME, 'a')
     # links_div = browser.find_element_by_id('links')
     # assert len(links_div.find_elements_by_xpath('//div')) > 0
     ## search_input = browser.find_element_by_name('q')
-    # assert search_input.get_attribute('value') == phrase
+    # assert search_input.get_attribute('value') == result
