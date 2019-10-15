@@ -8,13 +8,26 @@ Feature: Home Office Web Browsing
   # One feature can have multiple scenarios
   # The lines immediately after the feature title are just comments
 
-  Scenario: Home Office Search for brexit
+  Scenario Outline: Home Office Search for brexit
     Given the http://homeoffice.gov.uk page is displayed
-    Given expected url list:
-        |How to prepare if the UK leaves the EU with no deal|
-        |Visit Europe after Brexit|
-    When the user searches for "brexit"
-    Then results are shown for listed results
+    When the user searches for income tax
+    When the following links exist:
+      | link |url                                                                                                       |
+      | link1|https://www.gov.uk/government/publications/income-tax-personal-allowance-and-basic-rate-limit-for-2016-to-2017 |
+      | link2|https://www.gov.uk/income-tax-rates                                                                            |
+    Then the following text is displayed:
+      | display                                                              |
+      | Income Tax: personal allowance and basic rate limit for 2016 to 2017 |
+      | Income Tax rates and Personal Allowances                             |
+
+
+
+
+#      | https://homeoffice.gov.uk/jobs    | How to prepare if the UK leaves the EU with no deal |
+#      | https://homeoffice.gov.uk/tax     | Visit Europe after Brexit                           |
+#      | https://homeoffice.gov.uk/pension | pension after brexit                                |
+
+##    Then results are shown for listed results
 
 
 
