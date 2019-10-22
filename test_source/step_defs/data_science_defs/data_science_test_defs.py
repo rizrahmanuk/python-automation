@@ -26,7 +26,6 @@ def connection():
 
 
 # Given Steps
-
 @given(parsers.parse('the following tables "{tables}" are not empty in "{schema}"'))
 def table_not_empty(connection, tables: str, schema: str):
     for table in tables.split(","):
@@ -36,19 +35,17 @@ def table_not_empty(connection, tables: str, schema: str):
         if len(results) > 0:
             print('\n' + schema + '.' + table + ' is NOT empty')
         else:
-            print(schema + '.' + table + ' is empty')
-
-    ##connection.close()
-
+            print('ERROR '+ schema + '.' + table + ' is empty')
+            assert False
 
 # When Steps
-@when(parsers.parse('a customer with "{firstname}","{lastname}" exists'))
+@when(parsers.parse('a customer with {firstname},{lastname} exists'))
 def query_films_by_customer(connection, firstname, lastname):
     print('\nfirstname=' + firstname + ' lastname=' + lastname)
 
 
 # Then Steps
-@then(parsers.parse('do they "{firstname}","{lastname}" have any "{outstanding_rentals}"'))
+@then(parsers.parse('do they {firstname},{lastname} have any {outstanding_rentals}'))
 def query_films_by_customer(connection, firstname, lastname, outstanding_rentals):
     print('\nfirstname=' + firstname + ' lastname=' + lastname + ' outstanding_rentals=' + outstanding_rentals)
     assert outstanding_rentals == 'Y' or outstanding_rentals =='N'
@@ -57,7 +54,6 @@ def query_films_by_customer(connection, firstname, lastname, outstanding_rentals
     SELECT c.customer_id, c.first_name, f.title
     FROM sandpit_rahmanr.customer c, sandpit_rahmanr.rental r, sandpit_rahmanr.film f, sandpit_rahmanr.inventory i
     WHERE
-    --c.customer_id = 75
     c.first_name='{firstname}'
     AND c.last_name='{lastname}'
     AND c.customer_id = r.customer_id
@@ -80,7 +76,7 @@ def query_films_by_customer(connection, firstname, lastname, outstanding_rentals
         assert not isinstance(results, list)
 
 
-@then(parsers.parse('check if the customer with "{first_name}" has taken out gte "{number_of_movies}"'))
+@then(parsers.parse('check if the customer with {first_name} has taken out gte {number_of_movies}'))
 def firstnames_total(connection, first_name, number_of_movies: int):
     query = """
         SELECT count(*)
@@ -98,7 +94,7 @@ def firstnames_total(connection, first_name, number_of_movies: int):
     assert len(results) != 0
 
 
-@then(parsers.parse('reward them with "{num}" free movies to watch'))
+@then(parsers.parse('reward them with {num} free movies to watch'))
 def offer_free_n_movies(connection, num: int):
     print("rewarded movies="+str(num))
 

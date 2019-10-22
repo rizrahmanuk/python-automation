@@ -106,9 +106,10 @@ def results_displayed(result_display, links_displayed, wait):
 ##@then(parsers.re(r'expected url list:\n(?P<url>([\|\sa-zA-Z\|\n]+).$)', flags=re.DOTALL))     ##WIP v1.1
 ##@then(parsers.re(r'expected url list:\n(?P<url>(\|)([\sa-zA-Z0-9]).*(\|\n)).(?P<data>([\|\sa-zA-Z0-9\|]+).*)', flags=re.DOTALL)) ##WIP v1.2
 
-###Experimental design for a generic DataTable fixture####
-#  Author: Riz Rahman
-####################################################
+#########################################################
+# Experimental design for a generic DataTable fixture   #
+# Author: Riz Rahman following steps are WIP            #
+#########################################################
 @pytest.fixture(name="expected_results")
 @then(parsers.re(r'expected url list:\n(?P<data>.*)',
                  flags=re.DOTALL))
